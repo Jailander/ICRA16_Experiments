@@ -49,6 +49,11 @@ void edgeCallback(const std_msgs::String::ConstPtr& msg)
     }
     else
     {
+        if(save)
+        {
+            save = false;
+            bag.close();
+        }
         ros::Time begin = ros::Time::now();
         char stime[20];
         sprintf(stime,"%d",begin.sec);
