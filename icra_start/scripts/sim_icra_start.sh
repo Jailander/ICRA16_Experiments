@@ -23,7 +23,7 @@ tmux select-window -t $SESSION:1
 tmux send-keys "DISPLAY=:0 roslaunch mongodb_store mongodb_store.launch db_path:=$HOME/icra16/mongodb"
 
 tmux select-window -t $SESSION:2
-tmux send-keys "DISPLAY=:0 roslaunch strands_morse uol_mht_morse.launch"
+tmux send-keys "DISPLAY=:0 roslaunch strands_morse uol_bl_morse.launch"
 
 tmux select-window -t $SESSION:3
 tmux send-keys "DISPLAY=:0 roslaunch strands_morse uol_bl_nav2d.launch"
