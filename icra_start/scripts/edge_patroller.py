@@ -41,7 +41,7 @@ class edge_patroller(object):
                     rospy.logwarn("Failed to get current node")
                 
                 print current_node
-                if current_node == 'ChargingPoint':
+                if current_node.data == 'ChargingPoint':
                     print "Reset Odometry"
                     self.reset_odom()
                     
