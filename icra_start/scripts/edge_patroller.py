@@ -12,7 +12,7 @@ import topological_navigation.msg
 class edge_patroller(object):
     
     def __init__(self, list_of_nodes) :
-        
+        self.endexec= False
         rospy.on_shutdown(self._on_node_shutdown)
                    
         self.client = actionlib.SimpleActionClient('topological_navigation', topological_navigation.msg.GotoNodeAction)
@@ -24,18 +24,24 @@ class edge_patroller(object):
         yaml_data=open(list_of_nodes, "r")
     
         data = yaml.load(yaml_data)        
-        print data        
+        print data['freq']
+        print data['nodes']
         
-        sdate = datetime.now()
-        print sdate.strftime("%Y-%m-%d %H:%M:%S")
-        
-        for i in data:
-            self.navigate_to(i)
-
-        edate = datetime.now()
-        print edate.strftime("%Y-%m-%d %H:%M:%S")
-        
-        print (edate-sdate).total_seconds()
+       
+        while not self.endexec :
+            sdate = datetime.now()
+            print sdate.strftime("%Y-%m-%d %H:%M:%S")
+            if sdate.minute%data['freq'] == 0 :
+                for i in data['nodes']:
+                    self.navigate_to(i)
+                    
+                edate = datetime.now()
+                print edate.strftime("%Y-%m-%d %H:%M:%S")
+                
+                print (edate-sdate).total_seconds()
+            else:
+                rospy.sleep(30.)
+                
     
     
     def navigate_to(self, goal):
@@ -58,6 +64,7 @@ class edge_patroller(object):
 
     def _on_node_shutdown(self):
         self.client.cancel_all_goals()
+        self.endexec= True
         #sleep(2)
 
 
