@@ -7,6 +7,8 @@ from datetime import datetime
 # Brings in the SimpleActionClient
 import actionlib
 import topological_navigation.msg
+import std_msgs #.msg import String
+import scitos_msgs #/ResetOdometry
 
 
 class edge_patroller(object):
@@ -32,6 +34,17 @@ class edge_patroller(object):
             sdate = datetime.now()
             print sdate.strftime("%Y-%m-%d %H:%M:%S")
             if sdate.minute%data['freq'] == 0 :
+                
+                try:
+                    current_node = rospy.wait_for_message('/current_node', std_msgs.msg.String, timeout=10.0)
+                except rospy.ROSException :
+                    rospy.logwarn("Failed to get current node")
+                
+                print current_node
+                if current_node is 'ChargingPoint':
+                    print "Reset Odometry"
+                    
+                
                 for i in data['nodes']:
                     self.navigate_to(i)
                     
@@ -42,6 +55,20 @@ class edge_patroller(object):
             else:
                 rospy.sleep(30.)
                 
+
+    def reset_odom(self):
+        try:
+            rospy.wait_for_service('/reset_odometry', timeout=3)
+            try:
+                reset = rospy.ServiceProxy('/reset_odometry', scitos_msgs.srv.ResetOdometry)
+                resp1 = reset()
+                print resp1
+                #return True
+            except rospy.ServiceException, e:
+                print "Service call failed: %s"%e
+        except Exception, e:
+            rospy.logwarn('reset odometry service not available')
+
     
     
     def navigate_to(self, goal):
@@ -61,6 +88,7 @@ class edge_patroller(object):
         # Prints out the result of executing the action
         ps = self.client.get_result()  # A FibonacciResult
         print ps
+
 
     def _on_node_shutdown(self):
         self.client.cancel_all_goals()
