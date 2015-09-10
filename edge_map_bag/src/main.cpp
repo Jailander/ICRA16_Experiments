@@ -62,7 +62,7 @@ void edgeCallback(const std_msgs::String::ConstPtr& msg)
         ros::Time begin = ros::Time::now();
         char stime[20];
         sprintf(stime,"%d",begin.sec);
-        std::string bagname = msg->data + "_" + std::string(stime) +".bag"; //.c_str() + ".bag";
+        std::string bagname = std::string(stime) + "_" + msg->data + ".bag"; //.c_str() + ".bag";
         ROS_INFO("Recording info for [%s]", bagname.c_str());
         bag.open(bagname.c_str(), rosbag::bagmode::Write);
         //bag.open(bagname, rosbag::bagmode::Write);

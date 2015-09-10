@@ -20,8 +20,8 @@ do
   
   rosparam set use_sim_time true
   echo "Starting gmapping"
-  #rosrun gmapping slam_gmapping _xmin:=-10 _ymin:=-10 _xmax:=10 _ymax:=10 _delta:=0.05 &
-  rosrun gmapping slam_gmapping _delta:=0.05 &
+  rosrun gmapping slam_gmapping _maxUrange:=15.0 _xmin:=-20 _ymin:=-25 _xmax:=5 _ymax:=18 _delta:=0.05 _odom_frame:=map _map_frame:=gmap &
+  #rosrun gmapping slam_gmapping _delta:=0.05 &
   echo "done"
   sleep 1
 
@@ -35,13 +35,13 @@ do
     mv "$f" ./Fails/
   else
     mv map.yaml ./Maps/"$f".yaml
-    cp map.pgm ./Maps/"$f"-o.pgm
+    #cp map.pgm ./Maps/"$f"-o.pgm
 
     #timeout 40 ./mapstitch -o $f.pgm base.pgm map.pgm
-    R=$?
-    if [ "${R}" != "0" ]; then
-      echo "Mapstitch FAILED: ${R}" >> ./fails.txt
-    fi
+    #R=$?
+    #if [ "${R}" != "0" ]; then
+    #  echo "Mapstitch FAILED: ${R}" >> ./fails.txt
+    #fi
     cp map.pgm ./Maps/$f.pgm
     mv "$f" ./Done/
     rm map.pgm
