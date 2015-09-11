@@ -50,7 +50,7 @@
   <machine name="$(arg machine)" address="$(arg machine)" env-loader="$(optenv ROS_ENV_LOADER )" user="$(arg user)" default="true" />
 
   <!-- strands_movebase -->
-  <include file="$(find strands_movebase)/launch/movebase.launch">
+  <include file="$(find icra_start)/launch/icra_movebase.launch">
     <arg name="machine"  value="$(arg machine)"/>
     <arg name="user"  value="$(arg user)"/>
 

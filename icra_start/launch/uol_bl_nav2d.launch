@@ -1,0 +1,34 @@
+<launch>
+  <!-- declare arg to be passed in -->
+  <arg name="env" default="uol_bl"/> 
+  <arg name="map" value="$(find strands_morse)/uol/maps/uol_bl.yaml"/> 
+  <arg name="machine" default="localhost" />
+  <arg name="user" default="" />
+  <arg name="with_mux" default="false" />
+
+    <!-- lanch map server -->
+    <node name="map_server" pkg="message_store_map_switcher" type="message_store_map_server" args="-d $(arg env)"/>
+    <node name="no_go_map_server" pkg="map_server" type="map_server" args="$(arg map)">
+        <remap from="/map" to="/no_go_map"/>
+    </node>
+
+    <!-- launch AMCL -->
+    <include file="$(find scitos_2d_navigation)/launch/amcl.launch">
+        <arg name="machine"  value="$(arg machine)"/>
+        <arg name="user"  value="$(arg user)"/>
+    </include>
+
+    <!-- launch move base -->
+    <include file="$(find scitos_2d_navigation)/launch/move_base.launch">
+        <arg name="machine"  value="$(arg machine)"/>
+        <arg name="user"  value="$(arg user)"/>
+		<arg name="with_mux" value="$(arg with_mux)"/>
+    </include>
+
+ 
+  
+  
+  
+  <node name="static_transform_publisher" pkg="tf" type="static_transform_publisher" args="-11 -2.5 0.1 0 0 3.141592 0 /world /map 100"/>
+   
+</launch>
