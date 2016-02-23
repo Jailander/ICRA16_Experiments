@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- gmapping parameters -->
+    <arg name="debug" default="true"/>
+    <!--<arg name="xmin" default="-20.0"/>
+    <arg name="ymin" default="-20.0"/>
+    <arg name="xmax" default="5.0"/>
+    <arg name="ymax" default="13.0"/>
+    <arg name="xmin" default="-30.0"/>
+    <arg name="ymin" default="-15.0"/>
+    <arg name="xmax" default="6.0"/>
+    <arg name="ymax" default="13.0"/>
+    <arg name="maxUrange" default="10.0"/>
+    
+    <arg name="odom_frame" default="$(arg global_frame_id)"/>
+    <arg name="map_frame" default="map" />-->
+   
+    <node pkg="mapstitch" type="ros_mapstitch" name="ros_mapstitch" respawn="true">
+	<param name="debug" value="$(arg debug)"/>
+	<remap from="world" to="/map"/>
+	<remap from="map" to="/smap"/>
+	<remap from="align" to="gmap"/>
+    </node>
+
+    
+</launch>

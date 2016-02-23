@@ -1,13 +1,14 @@
 <launch>
   <!-- declare arg to be passed in -->
   <arg name="env" default="uol_bl"/> 
-  <arg name="map" value="$(find strands_morse)/uol/maps/uol_bl.yaml"/> 
+  <arg name="map_name" value="sim_base"/> 
+  <arg name="map" value="/home/jaime/icra16/iros_sim/sim_base.yaml"/> 
   <arg name="machine" default="localhost" />
   <arg name="user" default="" />
   <arg name="with_mux" default="false" />
 
     <!-- lanch map server -->
-    <node name="map_server" pkg="message_store_map_switcher" type="message_store_map_server" args="-d $(arg env)"/>
+    <node name="map_server" pkg="message_store_map_switcher" type="message_store_map_server" args="-d $(arg map_name)"/>
     <node name="no_go_map_server" pkg="map_server" type="map_server" args="$(arg map)">
         <remap from="/map" to="/no_go_map"/>
     </node>

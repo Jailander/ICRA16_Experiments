@@ -10,7 +10,7 @@ tmux new-window -t $SESSION:2 -n 'robot'
 tmux new-window -t $SESSION:3 -n 'cameras'
 tmux new-window -t $SESSION:4 -n 'ui'
 tmux new-window -t $SESSION:5 -n 'navigation'
-tmux new-window -t $SESSION:6 -n 'ppl_perception'
+tmux new-window -t $SESSION:6 -n 'gmapping'
 tmux new-window -t $SESSION:7 -n 'Rviz'
 
 
@@ -38,7 +38,7 @@ tmux select-window -t $SESSION:5
 tmux send-keys "DISPLAY=:0 roslaunch DISPLAY=:0 roslaunch icra_start icra_nav.launch map:=/opt/strands/maps/WW_GF_2015_09_08-cropped.yaml topological_map:=WW_GF_2015_09_11"
 
 tmux select-window -t $SESSION:6
-tmux send-keys "DISPLAY=:0 roslaunch perception_people_launch people_tracker_robot.launch machine:=left-cortex user:=strands"
+tmux send-keys "DISPLAY=:0 roslaunch icra_start iros_gmapping.launch"
 
 tmux select-window -t $SESSION:7
 tmux send-keys "DISPLAY=:0 rviz"
