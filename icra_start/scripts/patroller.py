@@ -12,12 +12,17 @@ import topological_navigation.msg
 import std_msgs #.msg import String
 import scitos_msgs #/ResetOdometry
 
+from strands_navigation_msgs.msg import MonitoredNavEvent
 
 class patroller(object):
     
     def __init__(self, list_of_nodes) :
         self.endexec= False
         rospy.on_shutdown(self._on_node_shutdown)
+        self.events=[]
+        
+        rospy.Subscriber('/topological_map', MonitoredNavEvent, self.EventCallback)
+        rospy.loginfo("Waiting for Topological map ...")
                    
         self.client = actionlib.SimpleActionClient('topological_navigation', topological_navigation.msg.GotoNodeAction)
         
@@ -51,7 +56,8 @@ class patroller(object):
                     start_mileage = rospy.wait_for_message('/odom_mileage', std_msgs.msg.Float32, timeout=10.0)
                 except rospy.ROSException :
                     rospy.logwarn("Failed to get mileage")
-   
+
+                self.events=[]   
                 for i in data['nodes']:
                     self.navigate_to(i)
 
@@ -64,7 +70,7 @@ class patroller(object):
                     rospy.logwarn("Failed to get mileage")
 
                 self.save_data(sdate, edate, start_mileage, end_mileage)
-                
+                self.events=[]        
                 
 
             else:
@@ -86,7 +92,7 @@ class patroller(object):
         dur = (edate-sdate).total_seconds()
         stats['total_time']=dur
         stats['distance']=end_mileage.data-start_mileage.data
-        
+        stats['nav_events']=self.events
                
         yml = yaml.safe_dump(stats, default_flow_style=False)
         filename2 = 'stats_'+filename+'.yaml'
@@ -109,7 +115,13 @@ class patroller(object):
         except Exception, e:
             rospy.logwarn('reset odometry service not available')
 
-    
+
+    def EventCallback(self, msg):
+        event_info={}
+        event_info['edge']=msg.edge_id
+        event_info['start']=msg.event_start_time.secs
+        event_info['end']=msg.event_end_time.secs
+        self.events.append(event_info)
     
     def navigate_to(self, goal):
     
