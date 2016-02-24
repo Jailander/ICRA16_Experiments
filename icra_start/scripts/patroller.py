@@ -85,7 +85,7 @@ class patroller(object):
         stats['end']=edate.strftime('%s')
         dur = (edate-sdate).total_seconds()
         stats['total_time']=dur
-        stats['distance']=end_mileage-start_mileage
+        stats['distance']=end_mileage.data-start_mileage.data
         
                
         yml = yaml.safe_dump(stats, default_flow_style=False)
