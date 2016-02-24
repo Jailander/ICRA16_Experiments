@@ -20,8 +20,9 @@ class patroller(object):
         self.endexec= False
         rospy.on_shutdown(self._on_node_shutdown)
         self.events=[]
+        self.ev_count=0
         
-        rospy.Subscriber('/topological_map', MonitoredNavEvent, self.EventCallback)
+        rospy.Subscriber('/monitored_navigation/monitored_nav_event', MonitoredNavEvent, self.EventCallback)
         rospy.loginfo("Waiting for Topological map ...")
                    
         self.client = actionlib.SimpleActionClient('topological_navigation', topological_navigation.msg.GotoNodeAction)
@@ -57,7 +58,8 @@ class patroller(object):
                 except rospy.ROSException :
                     rospy.logwarn("Failed to get mileage")
 
-                self.events=[]   
+                self.events=[]
+                self.ev_count=0
                 for i in data['nodes']:
                     self.navigate_to(i)
 
@@ -93,7 +95,7 @@ class patroller(object):
         stats['total_time']=dur
         stats['distance']=end_mileage.data-start_mileage.data
         stats['nav_events']=self.events
-               
+        stats['event_count']=self.ev_count
         yml = yaml.safe_dump(stats, default_flow_style=False)
         filename2 = 'stats_'+filename+'.yaml'
         fh = open(filename2, "w")
@@ -117,6 +119,9 @@ class patroller(object):
 
 
     def EventCallback(self, msg):
+        self.ev_count=self.ev_count+1
+        print "nav event recived:"
+        print msg.edge_id
         event_info={}
         event_info['edge']=msg.edge_id
         event_info['start']=msg.event_start_time.secs
