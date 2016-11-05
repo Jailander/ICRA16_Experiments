@@ -72,8 +72,10 @@ class patroller(object):
                     rospy.logwarn("Failed to get mileage")
 
                 self.save_data(sdate, edate, start_mileage, end_mileage)
-                self.events=[]        
-                
+                self.events=[]
+                print "Kill it NOW!!!!"
+                rospy.sleep(30.)
+                print "TOO LATE TO KILL IT"
 
             else:
                 rospy.sleep(30.)
